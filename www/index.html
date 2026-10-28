@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<meta name="description" content="BassLab 3D — Free, open-source Android sound-enhancement and soundbar companion app. No ads, no accounts, no tracking.">
+<meta name="theme-color" content="#7027D8" id="metaThemeColor">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BassLab 3D">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="img/devices/generic_bluetooth.svg">
+<title>BassLab 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+<main>
+
+<!-- HOME -->
+<section class="scr on" id="home" aria-label="Home">
+<header class="top"><h1>BassLab 3D<small>Sound enhancement</small></h1><button class="ib" data-go="settings" aria-label="Settings"><svg class="i" data-ic="gear"></svg></button></header>
+<div class="card dev" data-go="device" tabindex="0" role="button" aria-label="Device details">
+<div class="dev-info">
+    <div class="nm">ZEBRONICS</div>
+    <b>Juke Bar 3903</b>
+    <div class="st"><span class="dot"></span>Profile selected · not connected</div>
+  </div>
+  <div class="dev-img"><img src="img/devices/zebronics_juke_bar_3903.jpg" alt="ZEBRONICS Juke Bar 3903" loading="lazy"></div>
+
+</div>
+<!-- Now Playing card -->
+<div class="card" id="nowPlaying">
+<div style="display:flex;gap:16px;align-items:center"><div style="width:56px;height:56px;border-radius:12px;background:var(--pl);display:grid;place-items:center;color:var(--p)"><svg class="i" data-ic="music"></svg></div>
+<div style="flex:1"><div class="sub">Now Playing</div><b>No track loaded</b><div class="sub">Open the Player tab to add music.</div></div></div>
+</div>
+<div class="grid3" id="quick"></div>
+<div class="card"><div class="row"><button class="ib" id="mute" aria-label="Mute" aria-pressed="false"><svg class="i" data-ic="vol"></svg></button><input type="range" id="vol" min="0" max="100" value="40" aria-label="Phone media volume"><span class="v" id="volv">40</span></div><div class="sub">Phone media volume. Soundbar hardware volume is unavailable for this profile.</div></div>
+</section>
+
+<!-- PLAYER -->
+<section class="scr" id="player" aria-label="Player">
+<header class="top"><button class="ib back" aria-label="Back"><svg class="i" data-ic="back"></svg></button><h1>Player</h1><button class="ib" id="sleepTimerBtn" aria-label="Sleep timer"><svg class="i" data-ic="timer"></svg></button></header>
+<div class="note"><svg class="i" data-ic="info"></svg><span>All DSP (EQ, effects, limiter) runs on this player's audio. Pick files from your device to start.</span></div>
+<!-- Track info -->
+<div class="card player-card">
+<div id="playerTrackInfo" class="player-track-info"><b class="player-title">No track loaded</b><div class="sub">Add music files to start playing</div></div>
+<div class="player-progress-row">
+<input type="range" id="playerProgress" min="0" max="0" value="0" step="0.5" aria-label="Seek">
+</div>
+<div class="player-time-row"><span id="playerTime" class="sub">0:00 / 0:00</span><span id="sleepDisplay" class="sub" hidden></span></div>
+<!-- Transport controls -->
+<div class="player-controls">
+<button class="ib" id="shBtn" aria-label="Shuffle" aria-pressed="false"><svg class="i" data-ic="shuffle"></svg></button>
+<button class="ib" id="prevBtn" aria-label="Previous"><svg class="i" data-ic="prev"></svg></button>
+<button class="ib player-play" id="ppBtn" aria-label="Play"><svg class="i" data-ic="play"></svg></button>
+<button class="ib" id="nextBtn" aria-label="Next"><svg class="i" data-ic="skip"></svg></button>
+<button class="ib" id="rpBtn" aria-label="Repeat" aria-pressed="false"><svg class="i" data-ic="repeat"></svg></button>
+</div>
+</div>
+<!-- Queue -->
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><h2 style="flex:1;margin:0">Queue</h2><button class="btn ghost" id="clearQueue" style="width:auto;min-height:36px;padding:0 16px;font-size:13px">Clear</button></div>
+<button class="btn" id="addFiles" style="margin-bottom:12px"><svg class="i" data-ic="folder" style="vertical-align:-4px;margin-right:6px"></svg> Add files</button>
+<div class="card list" id="playerQueue"><div class="sub" style="padding:16px;text-align:center">Queue is empty. Add files to start playing.</div></div>
+</section>
+
+<!-- EQUALIZER -->
+<section class="scr" id="eq" aria-label="Equalizer">
+<header class="top"><button class="ib back" aria-label="Back"><svg class="i" data-ic="back"></svg></button><h1>Equalizer</h1><label class="sw" aria-label="Enable equalizer"><input type="checkbox" id="eqOn" checked><i></i></label></header>
+<div class="seg" role="tablist"><button role="tab" aria-selected="true" data-tab="g">Graphic EQ</button><button role="tab" aria-selected="false" data-tab="p">Parametric EQ</button></div>
+<div id="tg">
+<svg id="curve" viewBox="0 0 360 110" style="width:100%;height:110px" aria-label="Frequency response"></svg>
+<div class="eq" id="bands"></div>
+<div class="freq" id="fl"></div>
+<div class="card" style="margin-top:16px"><div class="row"><span>Preamp</span><input type="range" id="pre" min="-12" max="12" step="0.5" value="0" aria-label="Preamp"><span class="v" id="prev">0 dB</span></div></div>
+</div>
+<div id="tp" hidden>
+<div class="card" id="pfs"></div>
+<button class="btn ghost" id="addf">Add filter</button>
+</div>
+<h2>Presets</h2>
+<div class="chips" id="presets"></div>
+<button class="btn ghost" id="flat">Reset to flat</button>
+<!-- Safety Indicator -->
+<div id="safety" class="safety-indicator" hidden></div>
+<!-- Peak Meter -->
+<div class="card peak-meter-card" id="peakMeter" style="margin-top:12px">
+<div class="row"><span>Output level</span><span class="peak-val sub">–∞ dB</span></div>
+<div class="peak-bar"><div class="peak-fill"></div></div>
+</div>
+<!-- Test Tools -->
+<h2>Test Tools</h2>
+<div class="card">
+<div class="sub" style="margin-bottom:12px">Generate test tones through the app's audio engine to verify speaker/headphone output.</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<button class="btn ghost" id="testSweep" data-label="Frequency Sweep"><svg class="i" data-ic="sweep" style="vertical-align:-4px;margin-right:6px"></svg> Frequency Sweep</button>
+<div class="sweep-info"><div class="sweep-bar"><div id="sweepProgress" class="sweep-fill"></div></div><span id="sweepFreq" class="sub"></span></div>
+<button class="btn ghost" id="testPink" data-label="Pink Noise"><svg class="i" data-ic="noise" style="vertical-align:-4px;margin-right:6px"></svg> Pink Noise</button>
+<button class="btn ghost" id="testLR" data-label="L/R Balance"><svg class="i" data-ic="lr" style="vertical-align:-4px;margin-right:6px"></svg> L/R Balance</button>
+<div id="lrSide" class="lr-label" aria-live="polite"></div>
+<button class="btn ghost" id="testStop" style="color:var(--err)">Stop test</button>
+</div>
+</div>
+</section>
+
+<!-- EFFECTS -->
+<section class="scr" id="fx" aria-label="Effects">
+<header class="top"><h1>Effects</h1></header>
+<div class="note"><svg class="i" data-ic="info"></svg><span>Effects apply when audio plays through this app's player. Status shows "Active" when the engine is connected.</span></div>
+<div class="grid3" id="fxg"></div>
+<div class="card" id="fxs"></div>
+<div class="card"><div class="row"><span>Output limiter</span><span class="badge">Always on</span></div><div class="sub">Prevents digital clipping when bass or loudness is raised.</div></div>
+</section>
+
+<!-- MODES -->
+<section class="scr" id="modes" aria-label="Sound modes">
+<header class="top"><button class="ib back" aria-label="Back"><svg class="i" data-ic="back"></svg></button><h1>Sound Modes</h1></header>
+<div class="grid3" id="mg"></div>
+<div class="mode-hero"><b id="mt">Movie</b><p id="md"></p></div>
+<button class="btn" id="apply">Apply mode</button>
+<h2>Advanced presets</h2>
+<div class="grid3" id="adv"></div>
+<p class="sub">Starting profiles. You can customise each one in the Equalizer and Effects tabs.</p>
+</section>
+
+<!-- DEVICE -->
+<section class="scr" id="device" aria-label="Device">
+<header class="top"><button class="ib back" aria-label="Back"><svg class="i" data-ic="back"></svg></button><h1>Device</h1></header>
+<div class="card"><b style="font-size:17px">ZEBRONICS Juke Bar 3903</b><div class="st"><span class="dot"></span>Not connected</div></div>
+<div class="note"><svg class="i" data-ic="info"></svg><span>No documented control protocol is available for this model, so power, source and mute commands are unavailable.</span></div>
+<div class="grid3"><button class="tile" disabled><svg class="i" data-ic="power"></svg>Power</button><button class="tile" disabled><svg class="i" data-ic="src"></svg>Source</button><button class="tile" disabled><svg class="i" data-ic="vol"></svg>Mute</button></div>
+<h2>Connection type for this profile</h2>
+<div class="card list" role="radiogroup" id="src"></div>
+<button class="btn ghost" data-go="firmware">Firmware information</button>
+<button class="btn ghost" style="margin-top:8px" data-go="viz">Audio visualizer</button>
+</section>
+
+<!-- VISUALIZER -->
+<section class="scr" id="viz" aria-label="Visualizer">
+<header class="top"><button class="ib back" aria-label="Back"><svg class="i" data-ic="back"></svg></button><h1>Visualizer</h1></header>
+<canvas id="cv" aria-label="Audio visualizer"></canvas>
+<p class="sub" style="margin:8px 0 16px">Shows live frequency data when music plays through this app. Demo animation when idle.</p>
+<div class="chips" id="vs"></div>
+<div class="row"><span>Animations</span><label class="sw"><input type="checkbox" id="anim" checked aria-label="Animations"><i></i></label></div>
+</section>
+
+<!-- FIRMWARE -->
+<section class="scr" id="firmware" aria-label="Firmware">
+<header class="top"><button class="ib back" aria-label="Back"><svg class="i" data-ic="back"></svg></button><h1>Firmware</h1></header>
+<div class="card"><b>Firmware management isn't supported</b><p class="sub" style="margin-top:8px">The manufacturer doesn't expose firmware version or update functionality for this soundbar. BassLab 3D won't show version numbers or update buttons it can't verify.</p></div>
+<div class="card"><div class="row"><span>BassLab 3D app version</span><span class="sub">2.0.0</span></div><div class="sub">App updates are separate from soundbar firmware.</div></div>
+</section>
+
+<!-- SETTINGS -->
+<section class="scr" id="settings" aria-label="Settings">
+<header class="top"><button class="ib back" aria-label="Back"><svg class="i" data-ic="back"></svg></button><h1>Settings</h1></header>
+<h2>App</h2>
+<div class="card list">
+<div class="row"><span>Dark mode</span><label class="sw"><input type="checkbox" id="dark" aria-label="Dark mode"><i></i></label></div>
+<div class="row"><span>Haptic feedback</span><label class="sw"><input type="checkbox" checked aria-label="Haptic feedback"><i></i></label></div>
+<div class="row"><span>Keep screen on</span><label class="sw"><input type="checkbox" aria-label="Keep screen on"><i></i></label></div>
+<div class="row"><span>Media integration</span><label class="sw"><input type="checkbox" aria-label="Media integration"><i></i></label></div>
+</div>
+<h2>Audio</h2>
+<div class="card list">
+<div class="row"><span>Default sound mode</span><span class="sub">Movie</span></div>
+<div class="row"><span>Remember last mode</span><label class="sw"><input type="checkbox" checked aria-label="Remember last mode"><i></i></label></div>
+<div class="row"><span>Processing status</span><span class="badge" id="procStatus">Engine not connected</span></div>
+</div>
+<h2>Profiles</h2>
+<div class="card">
+<div class="sub" style="margin-bottom:8px">Save your current EQ, effects and mode as a profile for a specific output device. Profiles auto-switch when the output changes.</div>
+<div class="card list" id="profileList"><div class="sub" style="padding:12px">No saved profiles yet.</div></div>
+<button class="btn ghost" id="saveProfile" style="margin-top:8px"><svg class="i" data-ic="folder" style="vertical-align:-4px;margin-right:6px"></svg> Save current as profile</button>
+</div>
+<h2>Data</h2>
+<div class="card list">
+<div class="row"><span>Export presets</span><button class="btn ghost" id="exportBtn" style="width:auto;min-height:36px;padding:0 12px;font-size:13px"><svg class="i" data-ic="export" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></svg>Export</button></div>
+<div class="row"><span>Share presets</span><button class="btn ghost" id="shareBtn" style="width:auto;min-height:36px;padding:0 12px;font-size:13px"><svg class="i" data-ic="share" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></svg>Share</button></div>
+<div class="row"><span>Import presets</span><button class="btn ghost" id="importBtn" style="width:auto;min-height:36px;padding:0 12px;font-size:13px"><svg class="i" data-ic="import" style="width:16px;height:16px;vertical-align:-3px;margin-right:4px"></svg>Import</button></div>
+<div class="row"><button class="btn ghost" id="reset" style="color:var(--err)">Reset all preferences</button></div>
+</div>
+<h2>About</h2>
+<div class="card list">
+<div class="row"><span>Version</span><span class="sub">2.0.0</span></div>
+<div class="row"><span>Privacy</span><span class="sub">All data stays on this device. No ads, accounts or analytics.</span></div>
+</div>
+<h2>Support</h2>
+<div class="card list">
+<div class="row"><span>Show donation link</span><label class="sw"><input type="checkbox" id="donateToggle" aria-label="Show donation link"><i></i></label></div>
+<div class="row" id="donateLink" hidden><a href="https://github.com/sponsors" target="_blank" rel="noopener" style="color:var(--p);font-weight:600">♡ Support the developer</a></div>
+</div>
+<h2>Credits</h2>
+<div class="card list"><div class="row"><span>Created by</span><b style="font-weight:600">Arunaksha Das</b></div></div>
+</section>
+</main>
+
+<!-- A/B Compare floating button -->
+<button class="ab-btn" id="abBtn" aria-label="A/B Compare" aria-pressed="false" title="A: Processed"><svg class="i" data-ic="ab"></svg></button>
+
+<nav class="bar" aria-label="Primary"></nav>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

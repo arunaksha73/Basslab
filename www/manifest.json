@@ -1,0 +1,18 @@
+{
+  "name": "BassLab 3D",
+  "short_name": "BassLab 3D",
+  "description": "Sound enhancement and audio companion app for Android and mobile devices.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#12121a",
+  "theme_color": "#7027D8",
+  "icons": [
+    {
+      "src": "img/devices/generic_bluetooth.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

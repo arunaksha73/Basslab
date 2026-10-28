@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BassLab 3D</string>
+    <string name="title_activity_main">BassLab 3D</string>
+    <string name="package_name">com.basslab.threed</string>
+    <string name="custom_url_scheme">com.basslab.threed</string>
+</resources>
